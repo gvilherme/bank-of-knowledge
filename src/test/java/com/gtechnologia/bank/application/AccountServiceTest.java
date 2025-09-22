@@ -2,71 +2,177 @@ package com.gtechnologia.bank.application;
 
 import com.gtechnologia.bank.adapters.out.event.InMemoryEventQueue;
 import com.gtechnologia.bank.adapters.out.memory.InMemoryAccountRepository;
-import com.gtechnologia.bank.domain.ports.in.AccountUseCase;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AccountServiceTest {
-    @Test
-    void open_account_success() {
-        var repo = new InMemoryAccountRepository();
-        var queue = new InMemoryEventQueue();
-        AccountUseCase useCase = new AccountService(repo, queue);
 
-        var id = useCase.open("ACC-1", new BigDecimal("100.00"));
+    private InMemoryAccountRepository createRepo() {
+        return new InMemoryAccountRepository();
+    }
 
-        assertEquals("ACC-1", id);
-        assertTrue(repo.findById("ACC-1").isPresent());
-        assertEquals(new BigDecimal("100.00"), repo.findById("ACC-1").get().balance());
-        assertEquals("Account open with Id: ACC-1", queue.getNextEvent().toString());
+    private InMemoryEventQueue createEventQueue() {
+        return new InMemoryEventQueue();
+    }
+
+    private AccountService createService(InMemoryAccountRepository repo, InMemoryEventQueue queue) {
+        return new AccountService(repo, queue);
     }
 
     @Test
-    void cannot_open_duplicate() {
-        var repo = new InMemoryAccountRepository();
-        var svc = new AccountService(repo, new InMemoryEventQueue());
-        svc.open("ACC-1", BigDecimal.ZERO);
+    void shouldOpenAccountSuccessfully() {
+        // Arrange
+        var repo = createRepo();
+        var queue = createEventQueue();
+        var service = createService(repo, queue);
+        var accountId = UUID.randomUUID();
+        var initialDeposit = new BigDecimal("100.00");
 
-        assertThrows(IllegalStateException.class, () -> svc.open("ACC-1", BigDecimal.ZERO));
+        // Act
+        var returnedId = service.open(accountId, initialDeposit);
+
+        // Assert
+        assertAll(
+                () -> assertEquals(accountId, returnedId),
+                () -> assertTrue(repo.findById(accountId).isPresent()),
+                () -> assertEquals(initialDeposit, repo.findById(accountId).get().balance()),
+                () -> assertEquals("Account open with Id: " + accountId, queue.getNextEvent().toString())
+        );
     }
 
     @Test
-    void cannot_open_boundary_exception() {
-        var repo = new InMemoryAccountRepository();
-        var svc = new AccountService(repo, new InMemoryEventQueue());
-        var id = svc.open("ACC-1", new BigDecimal("10000.00"));
-        assertEquals("ACC-1", id);
-        assertThrows(IllegalArgumentException.class, () -> svc.open("ACC-2", new  BigDecimal("10000.00000001")));
+    void shouldNotOpenDuplicateAccount() {
+        // Arrange
+        var repo = createRepo();
+        var queue = createEventQueue();
+        var service = createService(repo, queue);
+        var accountId = UUID.randomUUID();
+
+        // Act
+        service.open(accountId, BigDecimal.ZERO);
+
+        // Assert
+        assertThrows(IllegalStateException.class, () -> service.open(accountId, BigDecimal.ZERO));
     }
 
     @Test
-    void valid_deposit() {
-        var repo = new InMemoryAccountRepository();
-        var svc = new AccountService(repo, new InMemoryEventQueue());
-        svc.open("ACC-1", BigDecimal.ZERO);
+    void shouldNotOpenDueToOutOfBoundsInitialDeposit() {
+        // Arrange
+        var repo = createRepo();
+        var queue = createEventQueue();
+        var service = createService(repo, queue);
 
-        svc.deposit("ACC-1", new BigDecimal("100.00"));
-        assertEquals(new BigDecimal("100.00"), repo.findById("ACC-1").get().balance());
+        var negativeDepositId = UUID.randomUUID();
+        var excessiveDepositId = UUID.randomUUID();
+
+        // Act
+        Exception negativeDepositException = assertThrows(IllegalArgumentException.class,
+                () -> service.open(negativeDepositId, new BigDecimal("-100.00")));
+        Exception excessiveDepositException = assertThrows(IllegalArgumentException.class,
+                () -> service.open(excessiveDepositId, new BigDecimal("10000.0000001")));
+
+        // Assert
+        assertAll(
+                () -> assertNotNull(negativeDepositException),
+                () -> assertNotNull(excessiveDepositException)
+        );
+    }
+
+
+    @Test
+    void shouldThrowExceptionForInvalidDepositAmount() {
+        // Arrange
+        var repo = createRepo();
+        var queue = createEventQueue();
+        var service = createService(repo, queue);
+        var accountId = UUID.randomUUID();
+        service.open(accountId, BigDecimal.ZERO);
+
+        // Act & Assert
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class, () -> service.deposit(accountId, new BigDecimal("-100.00"))),
+                () -> assertThrows(IllegalArgumentException.class, () -> service.deposit(accountId, new BigDecimal("0.00")))
+        );
     }
 
     @Test
-    void invalid_deposit_no_such_account() {
-        var repo = new InMemoryAccountRepository();
-        var svc = new AccountService(repo, new InMemoryEventQueue());
+    void shouldThrowExceptionForDepositOnNonexistentAccount() {
+        // Arrange
+        var repo = createRepo();
+        var queue = createEventQueue();
+        var service = createService(repo, queue);
+        var accountId = UUID.randomUUID();
 
-        assertThrows(IllegalStateException.class, () -> svc.deposit("ACC-1", new BigDecimal("100.00")));
+        // Act & Assert
+        assertThrows(IllegalStateException.class, () -> service.deposit(accountId, new BigDecimal("100.00")));
     }
 
     @Test
-    void invalid_deposit_negative_or_zero_amount() {
-        var repo = new InMemoryAccountRepository();
-        var svc = new AccountService(repo, new InMemoryEventQueue());
-        svc.open("ACC-1", BigDecimal.ZERO);
+    void shouldDepositSuccessfully() {
+        // Arrange
+        var repo = createRepo();
+        var queue = createEventQueue();
+        var service = createService(repo, queue);
+        var accountId = UUID.randomUUID();
+        service.open(accountId, BigDecimal.ZERO);
 
-        assertThrows(IllegalArgumentException.class, () -> svc.deposit("ACC-1", new BigDecimal("-100.00")));
-        assertThrows(IllegalArgumentException.class, () -> svc.deposit("ACC-1", new BigDecimal("0.00")));
+        // Act
+        service.deposit(accountId, new BigDecimal("100.00"));
+
+        // Assert
+        assertEquals(new BigDecimal("100.00"), repo.findById(accountId).get().balance());
+    }
+
+    @Test
+    void shouldThrowExceptionForInvalidWithdrawAmount() {
+        // Arrange
+        var repo = createRepo();
+        var queue = createEventQueue();
+        var service = createService(repo, queue);
+        var accountId = UUID.randomUUID();
+        service.open(accountId, BigDecimal.ZERO);
+
+        // Act & Assert
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class, () -> service.withdraw(accountId, new BigDecimal("-100.00"))),
+                () -> assertThrows(IllegalArgumentException.class, () -> service.withdraw(accountId, new BigDecimal("0.00"))),
+                () -> assertThrows(IllegalStateException.class, () -> service.withdraw(accountId, new BigDecimal("100.00")))
+        );
+    }
+
+    @Test
+    void shouldThrowExceptionForWithdrawOnNonexistentAccount() {
+        // Arrange
+        var repo = createRepo();
+        var queue = createEventQueue();
+        var service = createService(repo, queue);
+        var accountId = UUID.randomUUID();
+
+        // Act & Assert
+        assertThrows(IllegalStateException.class, () -> service.withdraw(accountId, new BigDecimal("100.00")));
+    }
+
+    @Test
+    void shouldWithdrawSuccessfully() {
+        // Arrange
+        var repo = createRepo();
+        var queue = createEventQueue();
+        var service = createService(repo, queue);
+        var accountId = UUID.randomUUID();
+        var accountId2 = UUID.randomUUID();
+        service.open(accountId, new BigDecimal("100.00"));
+        service.open(accountId2, new BigDecimal("100.00"));
+
+        // Act
+        service.withdraw(accountId, new BigDecimal("100.00"));
+        service.withdraw(accountId2, new BigDecimal("99.999999999999999"));
+
+        // Assert
+        assertEquals(BigDecimal.ZERO, repo.findById(accountId).get().balance());
+        assertNotEquals(BigDecimal.ZERO, repo.findById(accountId2).get().balance());
     }
 }

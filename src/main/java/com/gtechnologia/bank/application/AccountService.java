@@ -6,6 +6,7 @@ import com.gtechnologia.bank.domain.ports.out.AccountRepository;
 import com.gtechnologia.bank.domain.ports.out.EventPublisher;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public final class AccountService implements AccountUseCase {
     private final AccountRepository repo;
@@ -17,7 +18,7 @@ public final class AccountService implements AccountUseCase {
     }
 
     @Override
-    public String open(String id, BigDecimal initialDeposit) {
+    public UUID open(UUID id, BigDecimal initialDeposit) {
         if (repo.findById(id).isPresent()) throw new IllegalStateException("already exists");
         var acc = new Account(id, initialDeposit);
         repo.save(acc);
@@ -26,11 +27,17 @@ public final class AccountService implements AccountUseCase {
     }
 
     @Override
-    public void deposit(String id, BigDecimal amount) {
+    public void withdraw(UUID id, BigDecimal amount) {
+        var acc = repo.findById(id).orElseThrow(() -> new IllegalStateException("no such account"));
+        acc.withdraw(amount);
+        repo.save(acc);
+    }
+
+    @Override
+    public void deposit(UUID id, BigDecimal amount) {
         var acc = repo.findById(id).orElseThrow(() -> new IllegalStateException("no such account"));
         acc.deposit(amount);
         repo.save(acc);
     }
 
-    // Exponha outros casos de uso depois: deposit, withdraw, transfer...
 }

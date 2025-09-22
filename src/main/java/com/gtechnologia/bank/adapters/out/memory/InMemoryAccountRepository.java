@@ -6,12 +6,13 @@ import com.gtechnologia.bank.domain.ports.out.AccountRepository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public final class InMemoryAccountRepository implements AccountRepository {
-    private final Map<String, Account> store = new HashMap<>();
+    private final Map<UUID, Account> store = new HashMap<>();
 
     @Override
-    public Optional<Account> findById(String id) {
+    public Optional<Account> findById(UUID id) {
         return Optional.ofNullable(store.get(id));
     }
 
