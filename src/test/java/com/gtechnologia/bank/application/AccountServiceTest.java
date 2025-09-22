@@ -2,7 +2,7 @@ package com.gtechnologia.bank.application;
 
 import com.gtechnologia.bank.adapters.out.event.InMemoryEventQueue;
 import com.gtechnologia.bank.adapters.out.memory.InMemoryAccountRepository;
-import com.gtechnologia.bank.domain.ports.in.OpenAccountUseCase;
+import com.gtechnologia.bank.domain.ports.in.AccountUseCase;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -14,7 +14,7 @@ class AccountServiceTest {
     void open_account_success() {
         var repo = new InMemoryAccountRepository();
         var queue = new InMemoryEventQueue();
-        OpenAccountUseCase useCase = new AccountService(repo, queue);
+        AccountUseCase useCase = new AccountService(repo, queue);
 
         var id = useCase.open("ACC-1", new BigDecimal("100.00"));
 

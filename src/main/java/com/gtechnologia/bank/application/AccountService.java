@@ -1,14 +1,13 @@
 package com.gtechnologia.bank.application;
 
 import com.gtechnologia.bank.domain.model.Account;
-import com.gtechnologia.bank.domain.ports.in.DepositUseCase;
-import com.gtechnologia.bank.domain.ports.in.OpenAccountUseCase;
+import com.gtechnologia.bank.domain.ports.in.AccountUseCase;
 import com.gtechnologia.bank.domain.ports.out.AccountRepository;
 import com.gtechnologia.bank.domain.ports.out.EventPublisher;
 
 import java.math.BigDecimal;
 
-public final class AccountService implements OpenAccountUseCase, DepositUseCase {
+public final class AccountService implements AccountUseCase {
     private final AccountRepository repo;
     private final EventPublisher publisher;
 
