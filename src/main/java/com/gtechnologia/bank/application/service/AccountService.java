@@ -1,26 +1,25 @@
-package com.gtechnologia.bank.application;
+package com.gtechnologia.bank.application.service;
 
 import com.gtechnologia.bank.domain.model.Account;
 import com.gtechnologia.bank.domain.ports.in.AccountUseCase;
-import com.gtechnologia.bank.domain.ports.out.AccountRepository;
+import com.gtechnologia.bank.domain.ports.out.AccountRepositoryPort;
 import com.gtechnologia.bank.domain.ports.out.EventPublisher;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 public final class AccountService implements AccountUseCase {
-    private final AccountRepository repo;
+    private final AccountRepositoryPort repo;
     private final EventPublisher publisher;
 
-    public AccountService(AccountRepository repo, EventPublisher publisher) {
+    public AccountService(AccountRepositoryPort repo, EventPublisher publisher) {
         this.repo = repo;
         this.publisher = publisher;
     }
 
     @Override
-    public UUID open(UUID id, BigDecimal initialDeposit) {
-        if (repo.findById(id).isPresent()) throw new IllegalStateException("already exists");
-        var acc = new Account(id, initialDeposit);
+    public UUID openAccount(BigDecimal initialDeposit) {
+        var acc = new Account(UUID.randomUUID(), initialDeposit);
         repo.save(acc);
         publisher.publish("Account open with Id: " + acc.id());
         return acc.id();

@@ -5,6 +5,6 @@ import java.util.UUID;
 
 public interface AccountUseCase {
     void deposit(UUID id, BigDecimal deposit);
-    UUID open(UUID id, BigDecimal initialDeposit);
+    UUID openAccount(BigDecimal initialDeposit);
     void withdraw(UUID id, BigDecimal amount);
 }

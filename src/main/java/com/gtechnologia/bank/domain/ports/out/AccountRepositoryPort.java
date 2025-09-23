@@ -5,7 +5,7 @@ import com.gtechnologia.bank.domain.model.Account;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AccountRepository {
+public interface AccountRepositoryPort {
     Optional<Account> findById(UUID id);
-    void save(Account account);
+    Account save(Account account);
 }
