@@ -1,5 +1,9 @@
 package com.gtechnologia.bank.domain.ports.in;
 
+import com.gtechnologia.bank.domain.exception.account.AccountDoesNotExistsException;
+import com.gtechnologia.bank.domain.exception.account.AccountException;
+import com.gtechnologia.bank.domain.exception.account.InsufficientBalanceException;
+import com.gtechnologia.bank.domain.exception.account.InvalidAmountException;
 import com.gtechnologia.bank.domain.model.Account;
 import com.gtechnologia.bank.domain.model.Money;
 import com.gtechnologia.bank.domain.ports.out.AccountRepositoryPort;
@@ -55,9 +59,9 @@ class AccountUseCaseTest {
         final Money INITIAL_DEPOSIT_UPPER_BOUNDS = moneyHelper("10000.0000001");
 
         // Act
-        Exception negativeDepositException = assertThrows(IllegalArgumentException.class,
+        Exception negativeDepositException = assertThrows(InvalidAmountException.class,
                 () -> accountUseCase.openAccount(INITIAL_DEPOSIT_LOWER_BOUNDS));
-        Exception excessiveDepositException = assertThrows(IllegalArgumentException.class,
+        Exception excessiveDepositException = assertThrows(InvalidAmountException.class,
                 () -> accountUseCase.openAccount(INITIAL_DEPOSIT_UPPER_BOUNDS));
 
         // Assert
@@ -78,8 +82,8 @@ class AccountUseCaseTest {
 
         // Act & Assert
         assertAll(
-                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.deposit(accountId, moneyHelper("-100.00"))),
-                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.deposit(accountId, moneyHelper("0.00")))
+                () -> assertThrows(InvalidAmountException.class, () -> accountUseCase.deposit(accountId, moneyHelper("-100.00"))),
+                () -> assertThrows(InvalidAmountException.class, () -> accountUseCase.deposit(accountId, moneyHelper("0.00")))
         );
     }
 
@@ -89,7 +93,7 @@ class AccountUseCaseTest {
         var accountId = UUID.randomUUID();
 
         // Act & Assert
-        assertThrows(IllegalStateException.class, () -> accountUseCase.deposit(accountId, moneyHelper("100.00")));
+        assertThrows(AccountDoesNotExistsException.class, () -> accountUseCase.deposit(accountId, moneyHelper("100.00")));
     }
 
     @Test
@@ -115,9 +119,9 @@ class AccountUseCaseTest {
 
         // Act & Assert
         assertAll(
-                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("-100.00"))),
-                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("0.00"))),
-                () -> assertThrows(IllegalStateException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("100.00")))
+                () -> assertThrows(InvalidAmountException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("-100.00"))),
+                () -> assertThrows(InvalidAmountException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("0.00"))),
+                () -> assertThrows(InsufficientBalanceException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("100.00")))
         );
     }
 
@@ -127,7 +131,7 @@ class AccountUseCaseTest {
         var accountId = UUID.randomUUID();
 
         // Act & Assert
-        assertThrows(IllegalStateException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("100.00")));
+        assertThrows(AccountDoesNotExistsException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("100.00")));
     }
 
     @Test

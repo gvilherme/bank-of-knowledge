@@ -5,9 +5,10 @@ import com.gtechnologia.bank.domain.model.Money;
 
 import java.util.UUID;
 
-public interface AccountUseCase {
+public interface AccountUseCase{
     void deposit(UUID id, Money deposit);
     UUID openAccount(Money initialDeposit);
     void withdraw(UUID id, Money amount);
     Account getAccount(UUID id);
+    void transfer(UUID fromAccountId, UUID toAccountId, Money amount);
 }
