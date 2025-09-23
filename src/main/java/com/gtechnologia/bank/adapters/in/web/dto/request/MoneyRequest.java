@@ -1,4 +1,4 @@
-package com.gtechnologia.bank.adapters.in.web.dto;
+package com.gtechnologia.bank.adapters.in.web.dto.request;
 
 import com.gtechnologia.bank.domain.model.Money;
 import jakarta.validation.constraints.DecimalMin;

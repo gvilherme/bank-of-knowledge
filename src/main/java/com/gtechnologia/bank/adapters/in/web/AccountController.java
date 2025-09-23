@@ -1,7 +1,9 @@
 package com.gtechnologia.bank.adapters.in.web;
 
-import com.gtechnologia.bank.adapters.in.web.dto.MoneyRequest;
-import com.gtechnologia.bank.adapters.in.web.dto.OpenAccountRequest;
+import com.gtechnologia.bank.adapters.in.web.dto.request.MoneyRequest;
+import com.gtechnologia.bank.adapters.in.web.dto.request.OpenAccountRequest;
+import com.gtechnologia.bank.adapters.in.web.dto.response.AccountGetResponse;
+import com.gtechnologia.bank.domain.model.Account;
 import com.gtechnologia.bank.domain.ports.in.AccountUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,5 +35,11 @@ public class AccountController {
     public ResponseEntity<Void> withdraw(@PathVariable UUID id, @RequestBody MoneyRequest req) {
         useCase.withdraw(id, req.toMoney());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AccountGetResponse> getBalance(@PathVariable UUID id) {
+        Account account = useCase.getAccount(id);
+        return ResponseEntity.ok(new AccountGetResponse(account.id(), account.balance().amount(), account.balance().currency()));
     }
 }

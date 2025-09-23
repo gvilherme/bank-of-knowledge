@@ -39,4 +39,9 @@ public final class AccountService implements AccountUseCase {
         repo.save(acc);
     }
 
+    @Override
+    public Account getAccount(UUID id) {
+        return repo.findById(id).orElseThrow(() -> new IllegalStateException("no such account"));
+    }
+
 }
