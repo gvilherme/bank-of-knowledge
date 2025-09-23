@@ -29,7 +29,7 @@ class AccountControllerTest {
         // abre conta
         var res = mvc.perform(post("/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("100.00")))))
+                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("100.00"), null))))
                 .andExpect(status().isOk())
                 .andReturn();
         var id = UUID.fromString(res.getResponse().getContentAsString().replace("\"",""));
@@ -37,13 +37,13 @@ class AccountControllerTest {
         // deposita
         mvc.perform(post("/accounts/{id}/deposit", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new MoneyRequest(new BigDecimal("50.00")))))
+                        .content(om.writeValueAsString(new MoneyRequest(new BigDecimal("50.00"), null))))
                 .andExpect(status().isNoContent());
 
         // saca
         mvc.perform(post("/accounts/{id}/deposit", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new MoneyRequest(new BigDecimal("80.00")))))
+                        .content(om.writeValueAsString(new MoneyRequest(new BigDecimal("80.00"), null))))
                 .andExpect(status().isNoContent());
     }
 }

@@ -1,6 +1,7 @@
 package com.gtechnologia.bank.domain.ports.in;
 
 import com.gtechnologia.bank.domain.model.Account;
+import com.gtechnologia.bank.domain.model.Money;
 import com.gtechnologia.bank.domain.ports.out.AccountRepositoryPort;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,13 +24,20 @@ class AccountUseCaseTest {
     @Autowired
     private AccountUseCase accountUseCase;
 
+    private Money moneyHelper(String amount) {
+        return new Money(new BigDecimal(amount), Currency.getInstance("BRL"));
+    }
+
+    private Money moneyHelper(BigDecimal amount) {
+        return new Money(amount, Currency.getInstance("BRL"));
+    }
 
     @Test
     void shouldOpenAccountAccountSuccessfully() {
         // Arrange & Act
-        var initialDeposit = new BigDecimal("100.00");
+        Money initialDeposit = moneyHelper("100.00");
         var returnedId = accountUseCase.openAccount(initialDeposit);
-        var account = new Account(returnedId, new BigDecimal("100.00"));
+        var account = new Account(returnedId, moneyHelper("100.00"));
         when(repo.findById(returnedId)).thenReturn(Optional.of(account));
 
         // Assert
@@ -42,8 +51,8 @@ class AccountUseCaseTest {
     @Test
     void shouldNotOpenAccountDueToOutOfBoundsInitialDeposit() {
         // Arrange
-        final BigDecimal INITIAL_DEPOSIT_LOWER_BOUNDS = new BigDecimal("-000.000000000000000001");
-        final BigDecimal INITIAL_DEPOSIT_UPPER_BOUNDS = new BigDecimal("10000.0000001");
+        final Money INITIAL_DEPOSIT_LOWER_BOUNDS = moneyHelper("-000.000000000000000001");
+        final Money INITIAL_DEPOSIT_UPPER_BOUNDS = moneyHelper("10000.0000001");
 
         // Act
         Exception negativeDepositException = assertThrows(IllegalArgumentException.class,
@@ -62,15 +71,15 @@ class AccountUseCaseTest {
     @Test
     void shouldThrowExceptionForInvalidDepositAmount() {
         // Arrange
-        var accountId = accountUseCase.openAccount(BigDecimal.ZERO);
-        var account = new Account(accountId, BigDecimal.ZERO);
+        var accountId = accountUseCase.openAccount(moneyHelper(BigDecimal.ZERO));
+        var account = new Account(accountId, moneyHelper(BigDecimal.ZERO));
         when(repo.findById(accountId)).thenReturn(Optional.of(account));
 
 
         // Act & Assert
         assertAll(
-                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.deposit(accountId, new BigDecimal("-100.00"))),
-                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.deposit(accountId, new BigDecimal("0.00")))
+                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.deposit(accountId, moneyHelper("-100.00"))),
+                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.deposit(accountId, moneyHelper("0.00")))
         );
     }
 
@@ -80,35 +89,35 @@ class AccountUseCaseTest {
         var accountId = UUID.randomUUID();
 
         // Act & Assert
-        assertThrows(IllegalStateException.class, () -> accountUseCase.deposit(accountId, new BigDecimal("100.00")));
+        assertThrows(IllegalStateException.class, () -> accountUseCase.deposit(accountId, moneyHelper("100.00")));
     }
 
     @Test
     void shouldDepositSuccessfully() {
         // Arrange
-        var accountId = accountUseCase.openAccount(BigDecimal.ZERO);
-        var account = new Account(accountId, BigDecimal.ZERO);
+        var accountId = accountUseCase.openAccount(moneyHelper(BigDecimal.ZERO));
+        var account = new Account(accountId, moneyHelper(BigDecimal.ZERO));
         when(repo.findById(accountId)).thenReturn(Optional.of(account));
 
         // Act
-        accountUseCase.deposit(accountId, new BigDecimal("100.00"));
+        accountUseCase.deposit(accountId, moneyHelper("100.00"));
 
         // Assert
-        assertEquals(new BigDecimal("100.00"), repo.findById(accountId).get().balance());
+        assertEquals(moneyHelper("100.00"), repo.findById(accountId).get().balance());
     }
 
     @Test
     void shouldThrowExceptionForInvalidWithdrawAmount() {
         // Arrange
-        var accountId = accountUseCase.openAccount(BigDecimal.ZERO);
-        var account = new Account(accountId, BigDecimal.ZERO);
+        var accountId = accountUseCase.openAccount(moneyHelper(BigDecimal.ZERO));
+        var account = new Account(accountId, moneyHelper(BigDecimal.ZERO));
         when(repo.findById(accountId)).thenReturn(Optional.of(account));
 
         // Act & Assert
         assertAll(
-                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.withdraw(accountId, new BigDecimal("-100.00"))),
-                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.withdraw(accountId, new BigDecimal("0.00"))),
-                () -> assertThrows(IllegalStateException.class, () -> accountUseCase.withdraw(accountId, new BigDecimal("100.00")))
+                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("-100.00"))),
+                () -> assertThrows(IllegalArgumentException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("0.00"))),
+                () -> assertThrows(IllegalStateException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("100.00")))
         );
     }
 
@@ -118,25 +127,25 @@ class AccountUseCaseTest {
         var accountId = UUID.randomUUID();
 
         // Act & Assert
-        assertThrows(IllegalStateException.class, () -> accountUseCase.withdraw(accountId, new BigDecimal("100.00")));
+        assertThrows(IllegalStateException.class, () -> accountUseCase.withdraw(accountId, moneyHelper("100.00")));
     }
 
     @Test
     void shouldWithdrawSuccessfully() {
         // Arrange
-        var accountId = accountUseCase.openAccount(new BigDecimal("100.00"));
-        var account = new Account(accountId, new BigDecimal("100.00"));
-        var accountId2 = accountUseCase.openAccount(new BigDecimal("100.00"));
-        var account2 = new Account(accountId, new BigDecimal("100.00"));
+        var accountId = accountUseCase.openAccount(moneyHelper("100.00"));
+        var account = new Account(accountId, moneyHelper("100.00"));
+        var accountId2 = accountUseCase.openAccount(moneyHelper("100.00"));
+        var account2 = new Account(accountId, moneyHelper("100.00"));
         when(repo.findById(accountId)).thenReturn(Optional.of(account));
         when(repo.findById(accountId2)).thenReturn(Optional.of(account2));
 
         // Act
-        accountUseCase.withdraw(accountId, new BigDecimal("100.00"));
-        accountUseCase.withdraw(accountId2, new BigDecimal("99.999999999999999"));
+        accountUseCase.withdraw(accountId, moneyHelper("100.00"));
+        accountUseCase.withdraw(accountId2, moneyHelper("99.999999999999999"));
 
         // Assert
-        assertEquals(BigDecimal.ZERO, repo.findById(accountId).get().balance());
-        assertNotEquals(BigDecimal.ZERO, repo.findById(accountId2).get().balance());
+        assertEquals(BigDecimal.ZERO, repo.findById(accountId).get().balance().amount());
+        assertNotEquals(BigDecimal.ZERO, repo.findById(accountId2).get().balance().amount());
     }
 }

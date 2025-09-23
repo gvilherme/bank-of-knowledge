@@ -20,18 +20,18 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<UUID> open(@RequestBody OpenAccountRequest req) {
-        return ResponseEntity.ok(useCase.openAccount(req.initialDeposit()));
+        return ResponseEntity.ok(useCase.openAccount(req.getBalance()));
     }
 
     @PostMapping("/{id}/deposit")
     public ResponseEntity<Void> deposit(@PathVariable UUID id, @RequestBody MoneyRequest req) {
-        useCase.deposit(id, req.amount());
+        useCase.deposit(id, req.toMoney());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/withdraw")
     public ResponseEntity<Void> withdraw(@PathVariable UUID id, @RequestBody MoneyRequest req) {
-        useCase.withdraw(id, req.amount());
+        useCase.withdraw(id, req.toMoney());
         return ResponseEntity.noContent().build();
     }
 }

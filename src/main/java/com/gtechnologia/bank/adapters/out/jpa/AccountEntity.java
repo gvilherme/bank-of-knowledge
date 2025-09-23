@@ -1,5 +1,6 @@
 package com.gtechnologia.bank.adapters.out.jpa;
 
+import com.gtechnologia.bank.domain.model.Money;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -11,13 +12,13 @@ public class AccountEntity {
     @Column(columnDefinition = "uuid")
     private UUID id;
 
-    @Column(nullable = false, precision = 19, scale = 2)
-    private BigDecimal balance;
+    @Embedded
+    private Money balance;
 
     protected AccountEntity() {}
-    public AccountEntity(UUID id, BigDecimal balance) { this.id = id; this.balance = balance; }
+    public AccountEntity(UUID id, Money balance) { this.id = id; this.balance = balance; }
 
     public UUID getId() { return id; }
-    public BigDecimal getBalance() { return balance; }
-    public void setBalance(BigDecimal b) { this.balance = b; }
+    public Money getBalance() { return balance; }
+    public void setBalance(Money b) { this.balance = b; }
 }
