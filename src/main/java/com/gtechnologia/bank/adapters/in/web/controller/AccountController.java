@@ -6,6 +6,7 @@ import com.gtechnologia.bank.adapters.in.web.dto.request.TransferMoneyRequest;
 import com.gtechnologia.bank.adapters.in.web.dto.response.AccountGetResponse;
 import com.gtechnologia.bank.domain.model.Account;
 import com.gtechnologia.bank.domain.ports.in.AccountUseCase;
+import com.gtechnologia.bank.util.WrapAccountMetric;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,23 +23,27 @@ public class AccountController {
     }
 
     @PostMapping
+    @WrapAccountMetric("opened")
     public ResponseEntity<UUID> open(@RequestBody OpenAccountRequest req) {
         return ResponseEntity.ok(useCase.openAccount(req.getBalance()));
     }
 
     @PostMapping("/{id}/deposit")
+    @WrapAccountMetric("deposited")
     public ResponseEntity<Void> deposit(@PathVariable UUID id, @RequestBody MoneyRequest req) {
         useCase.deposit(id, req.toMoney());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/withdraw")
+    @WrapAccountMetric("withdrawn")
     public ResponseEntity<Void> withdraw(@PathVariable UUID id, @RequestBody MoneyRequest req) {
         useCase.withdraw(id, req.toMoney());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/transfer")
+    @WrapAccountMetric("transferred")
     public ResponseEntity<Void> transfer(@PathVariable UUID id, @RequestBody TransferMoneyRequest req) {
         useCase.transfer(id, req.accountToTransferId(), req.moneyRequest().toMoney());
         return ResponseEntity.noContent().build();
