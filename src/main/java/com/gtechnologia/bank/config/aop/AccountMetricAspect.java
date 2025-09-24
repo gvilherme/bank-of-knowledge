@@ -1,5 +1,6 @@
-package com.gtechnologia.bank.adapters.in.metrics;
+package com.gtechnologia.bank.config.aop;
 
+import com.gtechnologia.bank.adapters.in.metrics.OperationCounterFactory;
 import com.gtechnologia.bank.util.WrapAccountMetric;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -21,7 +22,11 @@ public class AccountMetricAspect {
         WrapAccountMetric annotation = signature.getMethod().getAnnotation(WrapAccountMetric.class);
         String metricType = annotation.value();
 
-        operationCounterFactory.createCounter(metricType);
-        return pjp.proceed();
+        var counter = operationCounterFactory.createCounter(metricType);
+        try {
+            return pjp.proceed();
+        } finally {
+            counter.increment();
+        }
     }
 }

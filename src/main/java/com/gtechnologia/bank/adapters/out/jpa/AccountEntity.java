@@ -17,7 +17,8 @@ public class AccountEntity {
     private UUID id;
 
     @Setter
-    @Embedded
+    @Convert(converter = MoneyConverter.class)
+    @Column(nullable = false, precision = 19, scale = 2)
     private Money balance;
 
     @Column(name = "created_at", updatable = false)

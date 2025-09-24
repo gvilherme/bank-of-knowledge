@@ -1,5 +1,6 @@
-package com.gtechnologia.bank.domain.exception.account;
+package com.gtechnologia.bank.config.aop;
 
+import com.gtechnologia.bank.domain.exception.account.AccountException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
