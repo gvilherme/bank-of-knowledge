@@ -3,12 +3,13 @@ package com.gtechnologia.bank.domain.model;
 import com.gtechnologia.bank.domain.exception.account.InsufficientBalanceException;
 import com.gtechnologia.bank.domain.exception.account.InvalidAmountException;
 import com.gtechnologia.bank.domain.exception.account.InvalidDestinationException;
+import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
 public final class Account {
     private final UUID id;
     private Money balance;
@@ -22,33 +23,26 @@ public final class Account {
         this.balance = initial;
     }
 
-    public UUID id() {
-        return id;
-    }
-
-    public Money balance() {
-        return balance;
-    }
-
     public void deposit(Money amount) {
         requirePositive(amount);
-        balance = new Money(balance.amount().add(amount.amount()), balance.currency());
+        balance = new Money(getBalance().amount().add(amount.amount()), getBalance().currency());
     }
 
     public void withdraw(Money amount) {
         requirePositive(amount);
-        if (balance.compareTo(amount) < 0) throw new InsufficientBalanceException("origin account has insufficient balance", this.id);
+        if (getBalance().compareTo(amount) < 0) throw new InsufficientBalanceException("origin account has insufficient balance", this.getId());
         balance = balance.subtract(amount);
-        if (balance.amount().unscaledValue().equals(BigDecimal.ZERO.unscaledValue())) {
-            balance = new Money(BigDecimal.ZERO, balance.currency()); // normalize -0.00 to 0.00
+        if (getBalance().amount().unscaledValue().equals(BigDecimal.ZERO.unscaledValue())) {
+            balance = new Money(BigDecimal.ZERO, getBalance().currency()); // normalize -0.00 to 0.00
         }
     }
 
     public void transferTo(Account to, Money amount) {
         if (to == null) throw new InvalidDestinationException("to cannot be null", null);
+        if (to.equals(this)) throw new InvalidDestinationException("cannot transfer to the same account", this.getId());
         requirePositive(amount);
         if (this.balance.compareTo(amount) < 0)
-            throw new InsufficientBalanceException("origin account has insufficient balance", this.id);
+            throw new InsufficientBalanceException("origin account has insufficient balance", this.getId());
         this.withdraw(amount);
         to.deposit(amount);
     }
@@ -59,11 +53,11 @@ public final class Account {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof Account other) && Objects.equals(id, other.id);
+        return (o instanceof Account other) && Objects.equals(getId(), other.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 }

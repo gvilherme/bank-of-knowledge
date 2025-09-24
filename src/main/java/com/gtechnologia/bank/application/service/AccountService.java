@@ -25,8 +25,8 @@ public class AccountService implements AccountUseCase {
     public UUID openAccount(Money initialDeposit) {
         var acc = new Account(UUID.randomUUID(), initialDeposit);
         repo.save(acc);
-        publisher.publish("Account open with Id: " + acc.id());
-        return acc.id();
+        publisher.publish("Account open with Id: " + acc.getId());
+        return acc.getId();
     }
 
     @WrapAccountException

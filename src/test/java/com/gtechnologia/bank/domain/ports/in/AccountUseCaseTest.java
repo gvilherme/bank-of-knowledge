@@ -48,7 +48,7 @@ class AccountUseCaseTest {
         assertAll(
                 () -> assertInstanceOf(UUID.class, returnedId),
                 () -> assertTrue(repo.findById(returnedId).isPresent()),
-                () -> assertEquals(initialDeposit, repo.findById(returnedId).get().balance())
+                () -> assertEquals(initialDeposit, repo.findById(returnedId).get().getBalance())
         );
     }
 
@@ -107,7 +107,7 @@ class AccountUseCaseTest {
         accountUseCase.deposit(accountId, moneyHelper("100.00"));
 
         // Assert
-        assertEquals(moneyHelper("100.00"), repo.findById(accountId).get().balance());
+        assertEquals(moneyHelper("100.00"), repo.findById(accountId).get().getBalance());
     }
 
     @Test
@@ -149,7 +149,7 @@ class AccountUseCaseTest {
         accountUseCase.withdraw(accountId2, moneyHelper("99.999999999999999"));
 
         // Assert
-        assertEquals(BigDecimal.ZERO, repo.findById(accountId).get().balance().amount());
-        assertNotEquals(BigDecimal.ZERO, repo.findById(accountId2).get().balance().amount());
+        assertEquals(BigDecimal.ZERO, repo.findById(accountId).get().getBalance().amount());
+        assertNotEquals(BigDecimal.ZERO, repo.findById(accountId2).get().getBalance().amount());
     }
 }

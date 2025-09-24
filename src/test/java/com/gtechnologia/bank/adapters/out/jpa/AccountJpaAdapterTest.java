@@ -24,7 +24,7 @@ public class AccountJpaAdapterTest {
         var acc = new Account(UUID.randomUUID(), new Money(new BigDecimal("10.00"), Currency.getInstance("BRL")));
         adapter.save(acc);
 
-        var loaded = adapter.findById(acc.id()).orElseThrow();
-        assertThat(loaded.balance().amount()).isEqualByComparingTo("10.00");
+        var loaded = adapter.findById(acc.getId()).orElseThrow();
+        assertThat(loaded.getBalance().amount()).isEqualByComparingTo("10.00");
     }
 }

@@ -1,7 +1,8 @@
-package com.gtechnologia.bank.adapters.in.web;
+package com.gtechnologia.bank.adapters.in.web.controller;
 
 import com.gtechnologia.bank.adapters.in.web.dto.request.MoneyRequest;
 import com.gtechnologia.bank.adapters.in.web.dto.request.OpenAccountRequest;
+import com.gtechnologia.bank.adapters.in.web.dto.request.TransferMoneyRequest;
 import com.gtechnologia.bank.adapters.in.web.dto.response.AccountGetResponse;
 import com.gtechnologia.bank.domain.model.Account;
 import com.gtechnologia.bank.domain.ports.in.AccountUseCase;
@@ -37,9 +38,15 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{id}/transfer")
+    public ResponseEntity<Void> transfer(@PathVariable UUID id, @RequestBody TransferMoneyRequest req) {
+        useCase.transfer(id, req.accountToTransferId(), req.moneyRequest().toMoney());
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<AccountGetResponse> getBalance(@PathVariable UUID id) {
         Account account = useCase.getAccount(id);
-        return ResponseEntity.ok(new AccountGetResponse(account.id(), account.balance().amount(), account.balance().currency()));
+        return ResponseEntity.ok(new AccountGetResponse(account.getId(), account.getBalance().amount(), account.getBalance().currency()));
     }
 }

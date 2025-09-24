@@ -32,6 +32,6 @@ public class AccountJpaAdapter implements AccountRepositoryPort {
     }
 
     private AccountEntity toEntity(Account d) {
-        return new AccountEntity(d.id(), d.balance());
+        return new AccountEntity(d.getId(), d.getBalance());
     }
 }
