@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Getter
 @Entity
-@Table(name = "accounts")
+@Table(name = "accounts", schema = "accounts")
 public class AccountEntity {
     @Id
     @Column(columnDefinition = "uuid")

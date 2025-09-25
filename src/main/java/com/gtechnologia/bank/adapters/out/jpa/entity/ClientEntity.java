@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Table(name = "clients")
+@Table(name = "clients", schema = "clients")
 public class ClientEntity {
     @Id
     private UUID id;

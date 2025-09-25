@@ -12,7 +12,7 @@ import lombok.Setter;
 @Embeddable
 @Getter
 @Setter
-@Table(name = "client_information")
+@Table(name = "client_information", schema = "clients")
 public class ClientInformationEntity {
     @Column(nullable = false, name = "first_name")
     private String firstName;

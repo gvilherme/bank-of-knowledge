@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Getter
 @Entity
-@Table(name = "outbox_events")
+@Table(name = "outbox_events", schema = "outbox")
 public class IntegrationEventEntity {
     @Id
     private UUID id;
