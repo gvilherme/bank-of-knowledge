@@ -1,4 +1,4 @@
-package com.gtechnologia.bank.domain.ports.in;
+package com.gtechnologia.bank.application.ports.in;
 
 import com.gtechnologia.bank.domain.model.Account;
 import com.gtechnologia.bank.domain.model.Money;

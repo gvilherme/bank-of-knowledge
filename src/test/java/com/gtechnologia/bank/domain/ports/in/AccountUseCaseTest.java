@@ -1,12 +1,12 @@
 package com.gtechnologia.bank.domain.ports.in;
 
 import com.gtechnologia.bank.domain.exception.account.AccountDoesNotExistsException;
-import com.gtechnologia.bank.domain.exception.account.AccountException;
 import com.gtechnologia.bank.domain.exception.account.InsufficientBalanceException;
 import com.gtechnologia.bank.domain.exception.account.InvalidAmountException;
 import com.gtechnologia.bank.domain.model.Account;
 import com.gtechnologia.bank.domain.model.Money;
-import com.gtechnologia.bank.domain.ports.out.AccountRepositoryPort;
+import com.gtechnologia.bank.application.ports.in.AccountUseCase;
+import com.gtechnologia.bank.application.ports.out.persistence.AccountRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 class AccountUseCaseTest {
 
     @MockitoBean
-    private AccountRepositoryPort repo;
+    private AccountRepository repo;
     @Autowired
     private AccountUseCase accountUseCase;
 

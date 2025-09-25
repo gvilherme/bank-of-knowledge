@@ -3,9 +3,9 @@ package com.gtechnologia.bank.application.service;
 import com.gtechnologia.bank.domain.exception.account.AccountDoesNotExistsException;
 import com.gtechnologia.bank.domain.model.Account;
 import com.gtechnologia.bank.domain.model.Money;
-import com.gtechnologia.bank.domain.ports.in.AccountUseCase;
-import com.gtechnologia.bank.domain.ports.out.AccountRepositoryPort;
-import com.gtechnologia.bank.domain.ports.out.EventPublisher;
+import com.gtechnologia.bank.application.ports.in.AccountUseCase;
+import com.gtechnologia.bank.application.ports.out.persistence.AccountRepository;
+import com.gtechnologia.bank.application.ports.out.event.EventPublisher;
 import com.gtechnologia.bank.util.WrapAccountException;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
@@ -15,10 +15,10 @@ import java.util.UUID;
 
 public class AccountService implements AccountUseCase {
     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
-    private final AccountRepositoryPort repo;
+    private final AccountRepository repo;
     private final EventPublisher publisher;
 
-    public AccountService(AccountRepositoryPort repo, EventPublisher publisher) {
+    public AccountService(AccountRepository repo, EventPublisher publisher) {
         this.repo = repo;
         this.publisher = publisher;
     }
@@ -30,7 +30,6 @@ public class AccountService implements AccountUseCase {
         logger.info("Opening account");
         var acc = new Account(UUID.randomUUID(), initialDeposit);
         repo.save(acc);
-        publisher.publish("Account open with Id: " + acc.getId());
         logger.info("Account open with Id: {}", acc.getId());
         return acc.getId();
     }

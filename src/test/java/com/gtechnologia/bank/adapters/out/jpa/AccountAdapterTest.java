@@ -14,10 +14,10 @@ import java.util.UUID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
-@Import(AccountJpaAdapter.class)
-public class AccountJpaAdapterTest {
+@Import(AccountAdapter.class)
+public class AccountAdapterTest {
     @Autowired
-    AccountJpaAdapter adapter;
+    AccountAdapter adapter;
 
     @Test
     void save_and_find() {

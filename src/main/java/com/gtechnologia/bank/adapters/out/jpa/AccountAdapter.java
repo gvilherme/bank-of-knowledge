@@ -1,18 +1,19 @@
 package com.gtechnologia.bank.adapters.out.jpa;
 
+import com.gtechnologia.bank.adapters.out.jpa.entity.AccountEntity;
 import com.gtechnologia.bank.domain.model.Account;
-import com.gtechnologia.bank.domain.ports.out.AccountRepositoryPort;
+import com.gtechnologia.bank.application.ports.out.persistence.AccountRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class AccountJpaAdapter implements AccountRepositoryPort {
+public class AccountAdapter implements AccountRepository {
 
     private final SpringDataAccountRepository repo;
 
-    public AccountJpaAdapter(SpringDataAccountRepository repo) {
+    public AccountAdapter(SpringDataAccountRepository repo) {
         this.repo = repo;
     }
 

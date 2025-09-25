@@ -1,11 +1,11 @@
-package com.gtechnologia.bank.domain.ports.out;
+package com.gtechnologia.bank.application.ports.out.persistence;
 
 import com.gtechnologia.bank.domain.model.Account;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AccountRepositoryPort {
+public interface AccountRepository {
     Optional<Account> findById(UUID id);
     Account save(Account account);
 }

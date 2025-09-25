@@ -1,5 +1,6 @@
-package com.gtechnologia.bank.adapters.out.jpa;
+package com.gtechnologia.bank.adapters.out.jpa.entity;
 
+import com.gtechnologia.bank.adapters.out.jpa.converter.MoneyConverter;
 import com.gtechnologia.bank.domain.model.Money;
 import jakarta.persistence.*;
 import lombok.Getter;

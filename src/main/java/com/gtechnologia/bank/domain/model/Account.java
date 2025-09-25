@@ -16,7 +16,8 @@ public final class Account {
 
     public Account(UUID id, Money initial) {
         if (id == null) throw new IllegalArgumentException("id cannot be null");
-        if (initial == null || initial.amount().signum() < 0) throw new InvalidAmountException("initial balance must be >= 0", id);
+        if (initial == null || initial.amount().signum() < 0)
+            throw new InvalidAmountException("initial balance must be >= 0", id);
         if (initial.compareTo(new Money(new BigDecimal("10000.00"), initial.currency())) > 0)
             throw new InvalidAmountException("initial balance must not be > 10000.00", id);
         this.id = id;
@@ -30,7 +31,8 @@ public final class Account {
 
     public void withdraw(Money amount) {
         requirePositive(amount);
-        if (getBalance().compareTo(amount) < 0) throw new InsufficientBalanceException("origin account has insufficient balance", this.getId());
+        if (getBalance().compareTo(amount) < 0)
+            throw new InsufficientBalanceException("origin account has insufficient balance", this.getId());
         balance = balance.subtract(amount);
         if (getBalance().amount().unscaledValue().equals(BigDecimal.ZERO.unscaledValue())) {
             balance = new Money(BigDecimal.ZERO, getBalance().currency()); // normalize -0.00 to 0.00
