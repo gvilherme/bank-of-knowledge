@@ -36,15 +36,17 @@ public class ClientAdapter implements ClientRepository {
 
     private ClientEntity fromClient(Client client) {
         return new ClientEntity(
-                client.getId(),
-                fromClientInformation(client.getClientInformation())
+                client.getClientId(),
+                fromClientInformation(client.getClientInformation()),
+                client.getKycStatus()
         );
     }
 
     private Client toClient(ClientEntity clientEntity) {
         return new Client(
                 clientEntity.getId(),
-                toClientInformation(clientEntity.getClientInformation())
+                toClientInformation(clientEntity.getClientInformation()),
+                clientEntity.getKycStatus()
         );
     }
 

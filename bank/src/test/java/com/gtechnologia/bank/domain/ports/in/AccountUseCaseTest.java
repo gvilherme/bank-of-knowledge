@@ -40,8 +40,8 @@ class AccountUseCaseTest {
     void shouldOpenAccountAccountSuccessfully() {
         // Arrange & Act
         Money initialDeposit = moneyHelper("100.00");
-        var returnedId = accountUseCase.openAccount(initialDeposit);
-        var account = new Account(returnedId, moneyHelper("100.00"));
+        var returnedId = accountUseCase.openAccount(initialDeposit, UUID.randomUUID());
+        var account = new Account(returnedId, UUID.randomUUID(), moneyHelper("100.00"));
         when(repo.findById(returnedId)).thenReturn(Optional.of(account));
 
         // Assert
@@ -60,9 +60,9 @@ class AccountUseCaseTest {
 
         // Act
         Exception negativeDepositException = assertThrows(InvalidAmountException.class,
-                () -> accountUseCase.openAccount(INITIAL_DEPOSIT_LOWER_BOUNDS));
+                () -> accountUseCase.openAccount(INITIAL_DEPOSIT_LOWER_BOUNDS, UUID.randomUUID()));
         Exception excessiveDepositException = assertThrows(InvalidAmountException.class,
-                () -> accountUseCase.openAccount(INITIAL_DEPOSIT_UPPER_BOUNDS));
+                () -> accountUseCase.openAccount(INITIAL_DEPOSIT_UPPER_BOUNDS, UUID.randomUUID()));
 
         // Assert
         assertAll(
@@ -75,8 +75,8 @@ class AccountUseCaseTest {
     @Test
     void shouldThrowExceptionForInvalidDepositAmount() {
         // Arrange
-        var accountId = accountUseCase.openAccount(moneyHelper(BigDecimal.ZERO));
-        var account = new Account(accountId, moneyHelper(BigDecimal.ZERO));
+        var accountId = accountUseCase.openAccount(moneyHelper(BigDecimal.ZERO), UUID.randomUUID());
+        var account = new Account(accountId, UUID.randomUUID(), moneyHelper(BigDecimal.ZERO));
         when(repo.findById(accountId)).thenReturn(Optional.of(account));
 
 
@@ -99,8 +99,8 @@ class AccountUseCaseTest {
     @Test
     void shouldDepositSuccessfully() {
         // Arrange
-        var accountId = accountUseCase.openAccount(moneyHelper(BigDecimal.ZERO));
-        var account = new Account(accountId, moneyHelper(BigDecimal.ZERO));
+        var accountId = accountUseCase.openAccount(moneyHelper(BigDecimal.ZERO), UUID.randomUUID());
+        var account = new Account(accountId, UUID.randomUUID(), moneyHelper(BigDecimal.ZERO));
         when(repo.findById(accountId)).thenReturn(Optional.of(account));
 
         // Act
@@ -113,8 +113,8 @@ class AccountUseCaseTest {
     @Test
     void shouldThrowExceptionForInvalidWithdrawAmount() {
         // Arrange
-        var accountId = accountUseCase.openAccount(moneyHelper(BigDecimal.ZERO));
-        var account = new Account(accountId, moneyHelper(BigDecimal.ZERO));
+        var accountId = accountUseCase.openAccount(moneyHelper(BigDecimal.ZERO), UUID.randomUUID());
+        var account = new Account(accountId, UUID.randomUUID(), moneyHelper(BigDecimal.ZERO));
         when(repo.findById(accountId)).thenReturn(Optional.of(account));
 
         // Act & Assert
@@ -137,10 +137,10 @@ class AccountUseCaseTest {
     @Test
     void shouldWithdrawSuccessfully() {
         // Arrange
-        var accountId = accountUseCase.openAccount(moneyHelper("100.00"));
-        var account = new Account(accountId, moneyHelper("100.00"));
-        var accountId2 = accountUseCase.openAccount(moneyHelper("100.00"));
-        var account2 = new Account(accountId, moneyHelper("100.00"));
+        var accountId = accountUseCase.openAccount(moneyHelper("100.00"), UUID.randomUUID());
+        var account = new Account(accountId, UUID.randomUUID(), moneyHelper("100.00"));
+        var accountId2 = accountUseCase.openAccount(moneyHelper("100.00"), UUID.randomUUID());
+        var account2 = new Account(accountId, UUID.randomUUID(), moneyHelper("100.00"));
         when(repo.findById(accountId)).thenReturn(Optional.of(account));
         when(repo.findById(accountId2)).thenReturn(Optional.of(account2));
 

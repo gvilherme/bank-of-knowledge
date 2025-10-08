@@ -1,6 +1,7 @@
 package com.gtechnologia.bank.adapters.out.jpa.entity;
 
 import com.gtechnologia.bank.adapters.out.jpa.converter.MoneyConverter;
+import com.gtechnologia.bank.adapters.out.jpa.projection.ClientView;
 import com.gtechnologia.bank.domain.model.Money;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,7 +16,11 @@ import java.util.UUID;
 public class AccountEntity {
     @Id
     @Column(columnDefinition = "uuid")
-    private UUID id;
+    private UUID accountId;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id", referencedColumnName = "client_id", nullable = false)
+    private ClientView clientId;
 
     @Setter
     @Convert(converter = MoneyConverter.class)
@@ -29,7 +34,7 @@ public class AccountEntity {
     private Instant updatedAt;
 
     protected AccountEntity() {}
-    public AccountEntity(UUID id, Money balance) { this.id = id; this.balance = balance; }
+    public AccountEntity(UUID accountId, Money balance, ClientView clientId) { this.accountId = accountId; this.balance = balance; this.clientId = clientId; }
 
     @PrePersist
     protected void onCreate() {

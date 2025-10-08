@@ -6,8 +6,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.UUID;
 
-public record OpenAccountRequest(@NotNull @DecimalMin("0.00") BigDecimal initialDeposit, String currencyCode) {
+public record OpenAccountRequest(@NotNull @DecimalMin("0.00") BigDecimal initialDeposit, String currencyCode, @NotNull UUID clientId) {
     public Currency getCurrency() {
         return currencyCode == null ? Currency.getInstance("BRL") : Currency.getInstance(currencyCode);
     }

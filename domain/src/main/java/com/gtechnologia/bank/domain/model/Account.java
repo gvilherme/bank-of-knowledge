@@ -12,14 +12,17 @@ import java.util.UUID;
 @Getter
 public final class Account {
     private final UUID id;
+    private final UUID clientId;
     private Money balance;
 
-    public Account(UUID id, Money initial) {
+    public Account(UUID id, UUID clientId, Money initial) {
         if (id == null) throw new IllegalArgumentException("id cannot be null");
         if (initial == null || initial.amount().signum() < 0)
             throw new InvalidAmountException("initial balance must be >= 0", id);
         if (initial.compareTo(new Money(new BigDecimal("10000.00"), initial.currency())) > 0)
             throw new InvalidAmountException("initial balance must not be > 10000.00", id);
+        if (clientId == null) throw new IllegalArgumentException("clientId cannot be null");
+        this.clientId = clientId;
         this.id = id;
         this.balance = initial;
     }

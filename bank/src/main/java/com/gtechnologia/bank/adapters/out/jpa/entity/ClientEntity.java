@@ -1,9 +1,7 @@
 package com.gtechnologia.bank.adapters.out.jpa.entity;
 
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.gtechnologia.bank.domain.model.KycStatus;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -16,10 +14,13 @@ public class ClientEntity {
     private UUID id;
     @Embedded
     private ClientInformationEntity clientInformation;
+    @Enumerated(EnumType.STRING)
+    private KycStatus kycStatus;
 
-    public ClientEntity(UUID id, ClientInformationEntity clientInformation) {
+    public ClientEntity(UUID id, ClientInformationEntity clientInformation, KycStatus kycStatus) {
         this.id = id;
         this.clientInformation = clientInformation;
+        this.kycStatus = kycStatus;
     }
 
     public ClientEntity() {

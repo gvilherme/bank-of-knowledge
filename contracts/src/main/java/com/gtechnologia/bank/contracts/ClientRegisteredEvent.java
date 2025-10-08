@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gtechnologia.bank.domain.model.Client;
 import com.gtechnologia.bank.domain.model.ClientInformation;
 import com.gtechnologia.bank.domain.model.DocumentNumber;
+import com.gtechnologia.bank.domain.model.KycStatus;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -15,17 +16,17 @@ public final class ClientRegisteredEvent extends IntegrationEvent {
 
     private final ClientRegisteredPayload payload;
 
-    public ClientRegisteredEvent(UUID eventId,String correlationId, String causationId,
+    public ClientRegisteredEvent(UUID eventId, String correlationId, String causationId,
                                  String aggregateId, String aggregateType, Instant occurredAt,
-                                 Client client, KycStatus kycStatus, int version) {
+                                 Client client, int version) {
         super(eventId, "ClientRegistered", correlationId, causationId, aggregateId, aggregateType, occurredAt, null, version);
-        this.payload = ClientRegisteredPayload.fromClient(client, kycStatus);
+        this.payload = ClientRegisteredPayload.fromClient(client);
         this.setPayload(payload);
     }
 
     public record ClientRegisteredPayload(UUID clientId, String name, String lastName, String document, KycStatus kycStatus) {
-        public static ClientRegisteredPayload fromClient(Client client, KycStatus kycStatus) {
-            return new ClientRegisteredPayload(client.getId(), client.getClientInformation().firstName(), client.getClientInformation().lastName(), client.getClientInformation().document().number(), kycStatus);
+        public static ClientRegisteredPayload fromClient(Client client) {
+            return new ClientRegisteredPayload(client.getClientId(), client.getClientInformation().firstName(), client.getClientInformation().lastName(), client.getClientInformation().document().number(), client.getKycStatus());
         }
     }
 
@@ -34,11 +35,10 @@ public final class ClientRegisteredEvent extends IntegrationEvent {
                 UUID.randomUUID(),
                 null,
                 null,
-                client.getId().toString(),
+                client.getClientId().toString(),
                 "Client",
                 Instant.now(),
                 client,
-                KycStatus.PENDING,
                 1
         );
     }
@@ -55,7 +55,6 @@ public final class ClientRegisteredEvent extends IntegrationEvent {
                     aggregateType,
                     occurredAt,
                     new Client(clientPayload.clientId(), new ClientInformation(clientPayload.name(), clientPayload.lastName(), new DocumentNumber(clientPayload.document()))),
-                    clientPayload.kycStatus(),
                     version
             );
         } catch (JsonProcessingException e) {

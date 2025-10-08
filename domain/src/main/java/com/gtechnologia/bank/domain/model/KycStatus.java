@@ -1,4 +1,4 @@
-package com.gtechnologia.bank.contracts;
+package com.gtechnologia.bank.domain.model;
 
 public enum KycStatus {
     PENDING,

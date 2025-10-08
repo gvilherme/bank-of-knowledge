@@ -12,9 +12,11 @@ import java.util.UUID;
 public class AccountAdapter implements AccountRepository {
 
     private final SpringDataAccountRepository repo;
+    private final SpringDataClientViewRepository clientRepo;
 
-    public AccountAdapter(SpringDataAccountRepository repo) {
+    public AccountAdapter(SpringDataAccountRepository repo, SpringDataClientViewRepository clientRepo) {
         this.repo = repo;
+        this.clientRepo = clientRepo;
     }
 
     @Override
@@ -29,10 +31,10 @@ public class AccountAdapter implements AccountRepository {
     }
 
     private Account toDomain(AccountEntity e) {
-        return new Account(e.getId(), e.getBalance());
+        return new Account(e.getAccountId(), e.getClientId().getClientId(), e.getBalance());
     }
 
     private AccountEntity toEntity(Account d) {
-        return new AccountEntity(d.getId(), d.getBalance());
+        return new AccountEntity(d.getId(), d.getBalance(), clientRepo.getReferenceById(d.getClientId()));
     }
 }

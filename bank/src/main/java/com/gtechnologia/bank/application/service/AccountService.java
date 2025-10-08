@@ -26,9 +26,9 @@ public class AccountService implements AccountUseCase {
     @WrapAccountException
     @Override
     @Transactional
-    public UUID openAccount(Money initialDeposit) {
+    public UUID openAccount(Money initialDeposit, UUID clientId) {
         logger.info("Opening account");
-        var acc = new Account(UUID.randomUUID(), initialDeposit);
+        var acc = new Account(UUID.randomUUID(), clientId, initialDeposit);
         repo.save(acc);
         logger.info("Account open with Id: {}", acc.getId());
         return acc.getId();

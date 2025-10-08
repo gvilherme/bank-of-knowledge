@@ -26,7 +26,7 @@ public class AccountController {
     @PostMapping
     @WrapAccountMetric("opened")
     public ResponseEntity<UUID> open(@Valid @RequestBody OpenAccountRequest req) {
-        return ResponseEntity.ok(useCase.openAccount(req.getBalance()));
+        return ResponseEntity.ok(useCase.openAccount(req.getBalance(), req.clientId()));
     }
 
     @PostMapping("/{id}/deposit")
