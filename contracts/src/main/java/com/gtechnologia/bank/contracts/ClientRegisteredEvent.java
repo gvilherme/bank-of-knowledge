@@ -3,6 +3,8 @@ package com.gtechnologia.bank.contracts;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gtechnologia.bank.domain.model.Client;
+import com.gtechnologia.bank.domain.model.ClientInformation;
+import com.gtechnologia.bank.domain.model.DocumentNumber;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -11,28 +13,25 @@ import java.util.UUID;
 @Getter
 public final class ClientRegisteredEvent extends IntegrationEvent {
 
-    private final KycStatus kycStatus;
     private final ClientRegisteredPayload payload;
 
-    public ClientRegisteredEvent(UUID eventId, String type, String correlationId, String causationId,
+    public ClientRegisteredEvent(UUID eventId,String correlationId, String causationId,
                                  String aggregateId, String aggregateType, Instant occurredAt,
                                  Client client, KycStatus kycStatus, int version) {
-        super(eventId, type, correlationId, causationId, aggregateId, aggregateType, occurredAt, null, version);
-        this.kycStatus = kycStatus;
+        super(eventId, "ClientRegistered", correlationId, causationId, aggregateId, aggregateType, occurredAt, null, version);
         this.payload = ClientRegisteredPayload.fromClient(client, kycStatus);
         this.setPayload(payload);
     }
 
-    public record ClientRegisteredPayload(UUID clientId, String name, KycStatus kycStatus) {
+    public record ClientRegisteredPayload(UUID clientId, String name, String lastName, String document, KycStatus kycStatus) {
         public static ClientRegisteredPayload fromClient(Client client, KycStatus kycStatus) {
-            return new ClientRegisteredPayload(client.getId(), client.getClientInformation().firstName(), kycStatus);
+            return new ClientRegisteredPayload(client.getId(), client.getClientInformation().firstName(), client.getClientInformation().lastName(), client.getClientInformation().document().number(), kycStatus);
         }
     }
 
     public static ClientRegisteredEvent pendingFromClient(Client client){
         return new ClientRegisteredEvent(
                 UUID.randomUUID(),
-                "ClientRegisteredEvent",
                 null,
                 null,
                 client.getId().toString(),
@@ -44,19 +43,18 @@ public final class ClientRegisteredEvent extends IntegrationEvent {
         );
     }
 
-    public static ClientRegisteredEvent fromEntity(UUID eventId, String type, String correlationId, String causationId, String aggregateId, String aggregateType, Instant occurredAt, String payload, int version){
+    public static ClientRegisteredEvent fromEntity(UUID eventId, String correlationId, String causationId, String aggregateId, String aggregateType, Instant occurredAt, String payload, int version){
         ObjectMapper mapper = new ObjectMapper();
         try {
             ClientRegisteredPayload clientPayload = mapper.readValue(payload, ClientRegisteredPayload.class);
             return new ClientRegisteredEvent(
                     eventId,
-                    type,
                     correlationId,
                     causationId,
                     aggregateId,
                     aggregateType,
                     occurredAt,
-                    new Client(clientPayload.clientId(), null),
+                    new Client(clientPayload.clientId(), new ClientInformation(clientPayload.name(), clientPayload.lastName(), new DocumentNumber(clientPayload.document()))),
                     clientPayload.kycStatus(),
                     version
             );

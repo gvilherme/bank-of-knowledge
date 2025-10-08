@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Getter
-public sealed abstract class IntegrationEvent permits ClientRegisteredEvent {
+public sealed abstract class IntegrationEvent permits ClientRegisteredEvent, KycApprovedEvent, KycRejectedEvent, AccountOpenedEvent, AccountRejectedEvent {
     private final UUID eventId;
     private final String type;
     private final String correlationId;
@@ -49,22 +49,59 @@ public sealed abstract class IntegrationEvent permits ClientRegisteredEvent {
     public abstract String stringPayload();
 
     public static IntegrationEvent factory(UUID eventId, String type, String correlationId, String causationId, String aggregateId, String aggregateType, Instant occurredAt, String payload, int version) {
-        switch (type) {
-            case "ClientRegisteredEvent":
-                return ClientRegisteredEvent.fromEntity(
-                        eventId,
-                        type,
-                        correlationId,
-                        causationId,
-                        aggregateId,
-                        aggregateType,
-                        occurredAt,
-                        payload,
-                        version
-                );
-            default:
-                throw new IllegalArgumentException("Unknown event type: " + type);
-        }
+        return switch (type) {
+            case "ClientRegistered" -> ClientRegisteredEvent.fromEntity(
+                    eventId,
+                    correlationId,
+                    causationId,
+                    aggregateId,
+                    aggregateType,
+                    occurredAt,
+                    payload,
+                    version
+            );
+            case "KycApproved" -> KycApprovedEvent.fromEntity(
+                    eventId,
+                    correlationId,
+                    causationId,
+                    aggregateId,
+                    aggregateType,
+                    occurredAt,
+                    payload,
+                    version
+            );
+            case "KycRejected" -> KycRejectedEvent.fromEntity(
+                    eventId,
+                    correlationId,
+                    causationId,
+                    aggregateId,
+                    aggregateType,
+                    occurredAt,
+                    payload,
+                    version
+            );
+            case "AccountOpened" -> AccountOpenedEvent.fromEntity(
+                    eventId,
+                    correlationId,
+                    causationId,
+                    aggregateId,
+                    aggregateType,
+                    occurredAt,
+                    payload,
+                    version
+            );
+            case "AccountRejected" -> AccountRejectedEvent.fromEntity(
+                    eventId,
+                    correlationId,
+                    causationId,
+                    aggregateId,
+                    aggregateType,
+                    occurredAt,
+                    payload,
+                    version
+            );
+            default -> throw new IllegalArgumentException("Unknown event type: " + type);
+        };
     }
 
 }
