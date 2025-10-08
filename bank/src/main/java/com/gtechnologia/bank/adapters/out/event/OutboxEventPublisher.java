@@ -2,7 +2,7 @@ package com.gtechnologia.bank.adapters.out.event;
 
 import com.gtechnologia.bank.application.ports.out.event.EventBroker;
 import com.gtechnologia.bank.application.ports.out.event.EventPublisher;
-import com.gtechnologia.bank.application.contracts.IntegrationEvent;
+import com.gtechnologia.bank.contracts.IntegrationEvent;
 import com.gtechnologia.bank.application.ports.out.persistence.OutboxRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 
