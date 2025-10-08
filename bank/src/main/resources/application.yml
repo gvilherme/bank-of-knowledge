@@ -10,7 +10,13 @@ spring:
       hibernate.format_sql: true
   h2:
     console.enabled: true
+  sql:
+    init:
+      mode: always
 logging:
+  level:
+    org.springframework.jdbc.datasource.init.ScriptUtils: DEBUG
+    org.hibernate.SQL: DEBUG
   pattern:
     console: =%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - [%X{correlationId}] %msg%n
 management:
