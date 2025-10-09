@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class AccountControllerTest {
 
     private static final String CORRELATION_ID_HEADER = "X-Correlation-ID";
@@ -32,13 +34,14 @@ class AccountControllerTest {
     MockMvc mvc;
     @Autowired
     ObjectMapper om;
+    private static final UUID randomUUID = UUID.fromString("f106b7d8-d85a-4c31-a148-1a4f00a0d2ce");
 
     @Test
     void open_deposit_withdraw_happy_path() throws Exception {
         // open account
         var res = mvc.perform(withCorrelationId(post("/accounts"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("100.00"), null))))
+                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("100.00"), null, randomUUID))))
                 .andExpect(status().isOk())
                 .andReturn();
         var id = UUID.fromString(res.getResponse().getContentAsString().replace("\"", ""));
@@ -72,13 +75,13 @@ class AccountControllerTest {
         // negative initial deposit
         mvc.perform(withCorrelationId(post("/accounts"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("-0.01"), null))))
+                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("-0.01"), null, randomUUID))))
                 .andExpect(status().isBadRequest());
 
         // excessive initial deposit
         mvc.perform(withCorrelationId(post("/accounts"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("10000.01"), null))))
+                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("10000.01"), null, randomUUID))))
                 .andExpect(status().isBadRequest());
     }
 
@@ -87,7 +90,7 @@ class AccountControllerTest {
         // open account
         var res = mvc.perform(withCorrelationId(post("/accounts"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("0.00"), null))))
+                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("0.00"), null, randomUUID))))
                 .andExpect(status().isOk())
                 .andReturn();
         var id = UUID.fromString(res.getResponse().getContentAsString().replace("\"", ""));
@@ -110,7 +113,7 @@ class AccountControllerTest {
         // open account
         var res = mvc.perform(withCorrelationId(post("/accounts"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("100.00"), null))))
+                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("100.00"), null, randomUUID))))
                 .andExpect(status().isOk())
                 .andReturn();
         var id = UUID.fromString(res.getResponse().getContentAsString().replace("\"", ""));
@@ -139,7 +142,7 @@ class AccountControllerTest {
         // open account
         var res = mvc.perform(withCorrelationId(post("/accounts"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("100.00"), null))))
+                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("100.00"), null, randomUUID))))
                 .andExpect(status().isOk())
                 .andReturn();
         var id = UUID.fromString(res.getResponse().getContentAsString().replace("\"", ""));
@@ -189,7 +192,7 @@ class AccountControllerTest {
         // open account 1
         var res1 = mvc.perform(withCorrelationId(post("/accounts"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("500.00"), null))))
+                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("500.00"), null, randomUUID))))
                 .andExpect(status().isOk())
                 .andReturn();
         var id1 = UUID.fromString(res1.getResponse().getContentAsString().replace("\"", ""));
@@ -197,7 +200,7 @@ class AccountControllerTest {
         // open account 2
         var res2 = mvc.perform(withCorrelationId(post("/accounts"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("300.00"), null))))
+                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("300.00"), null, randomUUID))))
                 .andExpect(status().isOk())
                 .andReturn();
         var id2 = UUID.fromString(res2.getResponse().getContentAsString().replace("\"", ""));
@@ -244,7 +247,7 @@ class AccountControllerTest {
         // open account 1
         var res1 = mvc.perform(withCorrelationId(post("/accounts"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("500.00"), null))))
+                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("500.00"), null, randomUUID))))
                 .andExpect(status().isOk())
                 .andReturn();
         var id1 = UUID.fromString(res1.getResponse().getContentAsString().replace("\"", ""));
@@ -252,7 +255,7 @@ class AccountControllerTest {
         // open account 2
         var res2 = mvc.perform(withCorrelationId(post("/accounts"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("300.00"), null))))
+                        .content(om.writeValueAsString(new OpenAccountRequest(new BigDecimal("300.00"), null, randomUUID))))
                 .andExpect(status().isOk())
                 .andReturn();
         var id2 = UUID.fromString(res2.getResponse().getContentAsString().replace("\"", ""));

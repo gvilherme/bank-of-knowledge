@@ -1,4 +1,4 @@
-package com.gtechnologia.bank.domain.model;
+package com.gtechnologia.bank.domain.model.client;
 
 import lombok.Getter;
 

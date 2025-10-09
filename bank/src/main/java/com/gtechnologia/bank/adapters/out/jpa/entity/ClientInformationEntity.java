@@ -1,7 +1,7 @@
 package com.gtechnologia.bank.adapters.out.jpa.entity;
 
 import com.gtechnologia.bank.adapters.out.jpa.converter.DocumentNumberConverter;
-import com.gtechnologia.bank.domain.model.DocumentNumber;
+import com.gtechnologia.bank.domain.model.client.DocumentNumber;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;

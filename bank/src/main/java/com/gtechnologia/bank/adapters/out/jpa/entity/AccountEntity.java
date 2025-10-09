@@ -2,7 +2,8 @@ package com.gtechnologia.bank.adapters.out.jpa.entity;
 
 import com.gtechnologia.bank.adapters.out.jpa.converter.MoneyConverter;
 import com.gtechnologia.bank.adapters.out.jpa.projection.ClientView;
-import com.gtechnologia.bank.domain.model.Money;
+import com.gtechnologia.bank.domain.model.account.AccountStatus;
+import com.gtechnologia.bank.domain.model.account.Money;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,8 +34,11 @@ public class AccountEntity {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @Enumerated(EnumType.STRING)
+    private AccountStatus status;
+
     protected AccountEntity() {}
-    public AccountEntity(UUID accountId, Money balance, ClientView clientId) { this.accountId = accountId; this.balance = balance; this.clientId = clientId; }
+    public AccountEntity(UUID accountId, Money balance, ClientView clientId, AccountStatus status) { this.accountId = accountId; this.balance = balance; this.clientId = clientId; this.status = status; }
 
     @PrePersist
     protected void onCreate() {

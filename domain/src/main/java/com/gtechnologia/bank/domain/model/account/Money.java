@@ -1,4 +1,4 @@
-package com.gtechnologia.bank.domain.model;
+package com.gtechnologia.bank.domain.model.account;
 
 import java.math.BigDecimal;
 import java.util.Currency;

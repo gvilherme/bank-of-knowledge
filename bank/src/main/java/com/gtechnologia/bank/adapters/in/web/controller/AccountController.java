@@ -4,7 +4,7 @@ import com.gtechnologia.bank.adapters.in.web.dto.request.MoneyRequest;
 import com.gtechnologia.bank.adapters.in.web.dto.request.OpenAccountRequest;
 import com.gtechnologia.bank.adapters.in.web.dto.request.TransferMoneyRequest;
 import com.gtechnologia.bank.adapters.in.web.dto.response.AccountGetResponse;
-import com.gtechnologia.bank.domain.model.Account;
+import com.gtechnologia.bank.domain.model.account.Account;
 import com.gtechnologia.bank.application.ports.in.AccountUseCase;
 import com.gtechnologia.bank.util.WrapAccountMetric;
 import jakarta.validation.Valid;

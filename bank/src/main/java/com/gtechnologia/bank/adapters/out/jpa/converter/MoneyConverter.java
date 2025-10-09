@@ -1,6 +1,6 @@
 package com.gtechnologia.bank.adapters.out.jpa.converter;
 
-import com.gtechnologia.bank.domain.model.Money;
+import com.gtechnologia.bank.domain.model.account.Money;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

@@ -1,6 +1,6 @@
 package com.gtechnologia.bank.adapters.out.jpa.entity;
 
-import com.gtechnologia.bank.domain.model.KycStatus;
+import com.gtechnologia.bank.domain.model.client.KycStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
 package com.gtechnologia.bank.adapters.out.jpa.converter;
 
-import com.gtechnologia.bank.domain.model.DocumentNumber;
+import com.gtechnologia.bank.domain.model.client.DocumentNumber;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

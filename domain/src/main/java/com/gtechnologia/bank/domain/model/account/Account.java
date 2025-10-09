@@ -1,4 +1,4 @@
-package com.gtechnologia.bank.domain.model;
+package com.gtechnologia.bank.domain.model.account;
 
 import com.gtechnologia.bank.domain.exception.account.InsufficientBalanceException;
 import com.gtechnologia.bank.domain.exception.account.InvalidAmountException;
@@ -14,17 +14,20 @@ public final class Account {
     private final UUID id;
     private final UUID clientId;
     private Money balance;
+    private AccountStatus status;
 
-    public Account(UUID id, UUID clientId, Money initial) {
+    public Account(UUID id, UUID clientId, Money initial, AccountStatus status) {
         if (id == null) throw new IllegalArgumentException("id cannot be null");
         if (initial == null || initial.amount().signum() < 0)
             throw new InvalidAmountException("initial balance must be >= 0", id);
         if (initial.compareTo(new Money(new BigDecimal("10000.00"), initial.currency())) > 0)
             throw new InvalidAmountException("initial balance must not be > 10000.00", id);
         if (clientId == null) throw new IllegalArgumentException("clientId cannot be null");
+        if (status == null) throw new IllegalArgumentException("status cannot be null");
         this.clientId = clientId;
         this.id = id;
         this.balance = initial;
+        this.status = status;
     }
 
     public void deposit(Money amount) {
@@ -54,6 +57,14 @@ public final class Account {
 
     private static void requirePositive(Money a) {
         if (a == null || a.amount().signum() <= 0) throw new InvalidAmountException("amount > 0", null);
+    }
+
+    public void setStatus(AccountStatus status) {
+        if (status == null) throw new IllegalArgumentException("status cannot be null");
+        if ((status.equals(AccountStatus.ACTIVE) || status.equals(AccountStatus.SUSPENDED) || status.equals(AccountStatus.CLOSED)) && status.equals(AccountStatus.PENDING)) {
+            throw new IllegalStateException("Cannot change from " + this.status + " to " + status);
+        }
+        this.status = status;
     }
 
     @Override

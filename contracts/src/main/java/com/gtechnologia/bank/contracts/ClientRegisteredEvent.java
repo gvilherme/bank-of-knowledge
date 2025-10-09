@@ -2,10 +2,10 @@ package com.gtechnologia.bank.contracts;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gtechnologia.bank.domain.model.Client;
-import com.gtechnologia.bank.domain.model.ClientInformation;
-import com.gtechnologia.bank.domain.model.DocumentNumber;
-import com.gtechnologia.bank.domain.model.KycStatus;
+import com.gtechnologia.bank.domain.model.client.Client;
+import com.gtechnologia.bank.domain.model.client.ClientInformation;
+import com.gtechnologia.bank.domain.model.client.DocumentNumber;
+import com.gtechnologia.bank.domain.model.client.KycStatus;
 import lombok.Getter;
 
 import java.time.Instant;

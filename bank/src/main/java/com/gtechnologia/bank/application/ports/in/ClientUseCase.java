@@ -1,6 +1,6 @@
 package com.gtechnologia.bank.application.ports.in;
 
-import com.gtechnologia.bank.domain.model.ClientInformation;
+import com.gtechnologia.bank.domain.model.client.ClientInformation;
 
 import java.util.UUID;
 

@@ -1,7 +1,7 @@
 package com.gtechnologia.bank.application.ports.out.persistence;
 
-import com.gtechnologia.bank.domain.model.Client;
-import com.gtechnologia.bank.domain.model.DocumentNumber;
+import com.gtechnologia.bank.domain.model.client.Client;
+import com.gtechnologia.bank.domain.model.client.DocumentNumber;
 
 import java.util.Optional;
 import java.util.UUID;

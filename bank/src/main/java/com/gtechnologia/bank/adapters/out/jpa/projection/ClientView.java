@@ -1,16 +1,20 @@
 package com.gtechnologia.bank.adapters.out.jpa.projection;
 
-import com.gtechnologia.bank.domain.model.KycStatus;
+import com.gtechnologia.bank.domain.model.client.KycStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Getter
 @Entity
-@Table(name = "client_view", schema = "accounts", indexes = {
-    @Index(name = "idx_client_view_last_event_id", columnList = "lastEventId")
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "client_kyc_view", schema = "accounts", indexes = {
+    @Index(name = "idx_client_kyc_view_last_event_id", columnList = "lastEventId")
 })
 public class ClientView {
     @Id

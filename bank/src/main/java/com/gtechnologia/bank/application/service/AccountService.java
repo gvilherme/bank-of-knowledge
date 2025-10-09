@@ -1,8 +1,9 @@
 package com.gtechnologia.bank.application.service;
 
 import com.gtechnologia.bank.domain.exception.account.AccountDoesNotExistsException;
-import com.gtechnologia.bank.domain.model.Account;
-import com.gtechnologia.bank.domain.model.Money;
+import com.gtechnologia.bank.domain.model.account.Account;
+import com.gtechnologia.bank.domain.model.account.AccountStatus;
+import com.gtechnologia.bank.domain.model.account.Money;
 import com.gtechnologia.bank.application.ports.in.AccountUseCase;
 import com.gtechnologia.bank.application.ports.out.persistence.AccountRepository;
 import com.gtechnologia.bank.application.ports.out.event.EventPublisher;
@@ -28,7 +29,7 @@ public class AccountService implements AccountUseCase {
     @Transactional
     public UUID openAccount(Money initialDeposit, UUID clientId) {
         logger.info("Opening account");
-        var acc = new Account(UUID.randomUUID(), clientId, initialDeposit);
+        var acc = new Account(UUID.randomUUID(), clientId, initialDeposit, AccountStatus.PENDING);
         repo.save(acc);
         logger.info("Account open with Id: {}", acc.getId());
         return acc.getId();

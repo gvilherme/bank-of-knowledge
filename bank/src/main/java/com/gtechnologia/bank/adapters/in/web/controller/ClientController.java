@@ -1,8 +1,8 @@
 package com.gtechnologia.bank.adapters.in.web.controller;
 
 import com.gtechnologia.bank.application.ports.in.ClientUseCase;
-import com.gtechnologia.bank.domain.model.ClientInformation;
-import com.gtechnologia.bank.domain.model.DocumentNumber;
+import com.gtechnologia.bank.domain.model.client.ClientInformation;
+import com.gtechnologia.bank.domain.model.client.DocumentNumber;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

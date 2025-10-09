@@ -1,7 +1,7 @@
 package com.gtechnologia.bank.application.ports.in;
 
-import com.gtechnologia.bank.domain.model.Account;
-import com.gtechnologia.bank.domain.model.Money;
+import com.gtechnologia.bank.domain.model.account.Account;
+import com.gtechnologia.bank.domain.model.account.Money;
 
 import java.util.UUID;
 
