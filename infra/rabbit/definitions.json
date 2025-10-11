@@ -1,0 +1,68 @@
+{
+  "rabbit_version": "3.12",
+  "users": [
+    {"name": "user", "password_hash": "sVtrBH88KYvCaxC3L5xZmAvldNF0vjsVvA+yWBGyGxhlC5au", "hashing_algorithm": "rabbit_password_hashing_sha256", "tags": "administrator"}
+  ],
+  "vhosts": [{"name": "/"}],
+  "permissions": [
+    {"user": "user", "vhost": "/", "configure": ".*", "write": ".*", "read": ".*"}
+  ],
+  "parameters": [],
+  "policies": [],
+  "exchanges": [
+    {"name": "client.events",  "vhost": "/", "type": "topic", "durable": true, "internal": false, "auto_delete": false, "arguments": {}},
+    {"name": "kyc.events",     "vhost": "/", "type": "topic", "durable": true, "internal": false, "auto_delete": false, "arguments": {}},
+    {"name": "account.events", "vhost": "/", "type": "topic", "durable": true, "internal": false, "auto_delete": false, "arguments": {}},
+
+    {"name": "kyc.dlx",     "vhost": "/", "type": "topic", "durable": true, "internal": false, "auto_delete": false, "arguments": {}},
+    {"name": "account.dlx", "vhost": "/", "type": "topic", "durable": true, "internal": false, "auto_delete": false, "arguments": {}}
+  ],
+  "queues": [
+    {
+      "name": "kyc.client-registered.q",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "kyc.dlx",
+        "x-dead-letter-routing-key": "dlq",
+        "x-message-ttl": 10000
+      }
+    },
+    {
+      "name": "account.client.q",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "account.dlx",
+        "x-dead-letter-routing-key": "dlq",
+        "x-message-ttl": 10000
+      }
+    },
+    {
+      "name": "account.kyc.q",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "account.dlx",
+        "x-dead-letter-routing-key": "dlq",
+        "x-message-ttl": 10000
+      }
+    },
+
+    { "name": "kyc.client-registered.dlq", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "account.client.dlq",        "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} },
+    { "name": "account.kyc.dlq",           "vhost": "/", "durable": true, "auto_delete": false, "arguments": {} }
+  ],
+  "bindings": [
+    { "source": "client.events",  "vhost": "/", "destination": "kyc.client-registered.q", "destination_type": "queue", "routing_key": "ClientRegistered.*", "arguments": {} },
+    { "source": "client.events",  "vhost": "/", "destination": "account.client.q",        "destination_type": "queue", "routing_key": "ClientRegistered.*", "arguments": {} },
+    { "source": "kyc.events",     "vhost": "/", "destination": "account.kyc.q",           "destination_type": "queue", "routing_key": "Kyc*.*",             "arguments": {} },
+
+    { "source": "kyc.dlx",        "vhost": "/", "destination": "kyc.client-registered.dlq", "destination_type": "queue", "routing_key": "dlq", "arguments": {} },
+    { "source": "account.dlx",    "vhost": "/", "destination": "account.client.dlq",        "destination_type": "queue", "routing_key": "dlq", "arguments": {} },
+    { "source": "account.dlx",    "vhost": "/", "destination": "account.kyc.dlq",           "destination_type": "queue", "routing_key": "dlq", "arguments": {} }
+  ]
+}

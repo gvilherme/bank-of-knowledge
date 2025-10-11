@@ -1,0 +1,24 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: bank-rabbit
+    ports:
+      - "5672:5672"      # AMQP
+      - "15672:15672"    # UI
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+      # carrega definitions.json no boot
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: >
+        -rabbitmq_management load_definitions "/etc/rabbitmq/definitions.json"
+    volumes:
+      - rabbit_data:/var/lib/rabbitmq
+      - ./definitions.json:/etc/rabbitmq/definitions.json:ro
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  rabbit_data:
