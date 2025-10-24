@@ -6,7 +6,7 @@ import com.gtechnologia.bank.application.ports.out.event.EventBroker;
 public class InMemoryEventBroker implements EventBroker {
 
     @Override
-    public void send(IntegrationEvent event) throws Exception {
+    public void send(IntegrationEvent<?> event) throws Exception {
 
     }
 }

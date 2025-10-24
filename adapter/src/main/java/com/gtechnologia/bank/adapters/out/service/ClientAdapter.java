@@ -1,5 +1,6 @@
-package com.gtechnologia.bank.adapters.out.jpa;
+package com.gtechnologia.bank.adapters.out.service;
 
+import com.gtechnologia.bank.adapters.out.jpa.SpringDataClientRepository;
 import com.gtechnologia.bank.adapters.out.jpa.entity.ClientEntity;
 import com.gtechnologia.bank.adapters.out.jpa.entity.ClientInformationEntity;
 import com.gtechnologia.bank.application.ports.out.persistence.ClientRepository;

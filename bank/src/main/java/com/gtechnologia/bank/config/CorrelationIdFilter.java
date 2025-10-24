@@ -13,7 +13,7 @@ import org.slf4j.MDC;
 
 import java.io.IOException;
 
-@Profile("!test")
+@Profile("prod")
 @Component
 public class CorrelationIdFilter extends OncePerRequestFilter {
 

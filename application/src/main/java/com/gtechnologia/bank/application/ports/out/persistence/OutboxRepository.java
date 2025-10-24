@@ -5,11 +5,11 @@ import com.gtechnologia.bank.contracts.IntegrationEvent;
 import java.util.List;
 
 public interface OutboxRepository {
-    IntegrationEvent append(IntegrationEvent eventRecord);
+    IntegrationEvent<?> append(IntegrationEvent<?> eventRecord);
 
-    List<IntegrationEvent> findPendingEvents();
+    List<IntegrationEvent<?>> findPendingEvents();
 
-    void markAsSent(IntegrationEvent event);
+    void markAsSent(IntegrationEvent<?> event);
 
-    void incrementRetry(IntegrationEvent event);
+    void incrementRetry(IntegrationEvent<?> event);
 }

@@ -19,8 +19,8 @@ public final class OutboxEventPublisher implements EventPublisher {
 
     @Scheduled(fixedDelay = 5000)
     public void processOutbox() {
-        List<IntegrationEvent> events = outboxRepository.findPendingEvents();
-        for (IntegrationEvent event : events) {
+        List<IntegrationEvent<?>> events = outboxRepository.findPendingEvents();
+        for (IntegrationEvent<?> event : events) {
             try {
                 brokerAdapter.send(event);
                 outboxRepository.markAsSent(event);
@@ -31,7 +31,7 @@ public final class OutboxEventPublisher implements EventPublisher {
     }
 
     @Override
-    public void publish(IntegrationEvent event) {
+    public void publish(IntegrationEvent<?> event) {
         outboxRepository.append(event);
     }
 }

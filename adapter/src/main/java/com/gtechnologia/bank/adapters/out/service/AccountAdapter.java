@@ -1,5 +1,7 @@
-package com.gtechnologia.bank.adapters.out.jpa;
+package com.gtechnologia.bank.adapters.out.service;
 
+import com.gtechnologia.bank.adapters.out.jpa.SpringDataAccountRepository;
+import com.gtechnologia.bank.adapters.out.jpa.SpringDataClientViewRepository;
 import com.gtechnologia.bank.adapters.out.jpa.entity.AccountEntity;
 import com.gtechnologia.bank.adapters.out.jpa.projection.ClientView;
 import com.gtechnologia.bank.domain.model.account.Account;
