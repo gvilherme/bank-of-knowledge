@@ -9,6 +9,7 @@ import com.gtechnologia.bank.domain.model.client.ClientInformation;
 import com.gtechnologia.bank.domain.model.client.DocumentNumber;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,6 +34,14 @@ public class ClientAdapter implements ClientRepository {
     @Override
     public Optional<Client> findByDocument(DocumentNumber document) {
         return clientRepository.findByClientInformation_Document(document).map(this::toClient);
+    }
+
+    @Override
+    public Optional<List<Client>> findAll(int page, int size) {
+        var pageable = org.springframework.data.domain.PageRequest.of(page, size);
+        var clientEntitiesPage = clientRepository.findAll(pageable);
+        var clients = clientEntitiesPage.stream().map(this::toClient).toList();
+        return Optional.of(clients);
     }
 
     private ClientEntity fromClient(Client client) {

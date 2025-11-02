@@ -10,6 +10,7 @@ import com.gtechnologia.bank.domain.model.client.Client;
 import com.gtechnologia.bank.domain.model.client.ClientInformation;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public class ClientService implements ClientUseCase {
@@ -29,6 +30,18 @@ public class ClientService implements ClientUseCase {
         var client = new Client(UUID.randomUUID(), clientInformation);
         clientRepository.save(client);
         eventPublisher.publish(IntegrationEventFactory.create(new ClientEvent(client.getClientId(), client.getClientInformation(), client.getKycStatus()), UUID.randomUUID().toString(), "Client", "ClientRegistered", 2, UUID.randomUUID().toString(), null, client.getClientId(), Instant.now()));
-        return null;
+        return client.getClientId();
+    }
+
+    @Override
+    public Client getClientById(UUID clientId) {
+        logger.info("Retrieving a client by ID");
+        return clientRepository.findById(clientId).orElseThrow(() -> new IllegalArgumentException("Client not found with ID: " + clientId));
+    }
+
+    @Override
+    public List<Client> getClients(int page, int size) {
+        logger.info("Retrieving clients with pagination");
+        return clientRepository.findAll(page, size).orElseThrow(() -> new IllegalArgumentException("No clients found"));
     }
 }

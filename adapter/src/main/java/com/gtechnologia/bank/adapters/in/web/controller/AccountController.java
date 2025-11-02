@@ -3,7 +3,7 @@ package com.gtechnologia.bank.adapters.in.web.controller;
 import com.gtechnologia.bank.adapters.in.web.dto.request.MoneyRequest;
 import com.gtechnologia.bank.adapters.in.web.dto.request.OpenAccountRequest;
 import com.gtechnologia.bank.adapters.in.web.dto.request.TransferMoneyRequest;
-import com.gtechnologia.bank.adapters.in.web.dto.response.AccountGetResponse;
+import com.gtechnologia.bank.adapters.in.web.dto.response.AccountResponse;
 import com.gtechnologia.bank.domain.model.account.Account;
 import com.gtechnologia.bank.application.ports.in.AccountUseCase;
 import com.gtechnologia.bank.util.WrapAccountMetric;
@@ -51,8 +51,8 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AccountGetResponse> getBalance(@PathVariable("id") UUID id) {
+    public ResponseEntity<AccountResponse> getBalance(@PathVariable("id") UUID id) {
         Account account = useCase.getAccount(id);
-        return ResponseEntity.ok(new AccountGetResponse(account.getId(), account.getBalance().amount(), account.getBalance().currency()));
+        return ResponseEntity.ok(new AccountResponse(account.getId(), account.getBalance().amount(), account.getBalance().currency()));
     }
 }
